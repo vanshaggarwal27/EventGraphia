@@ -6,8 +6,9 @@ from django.utils.timezone import now
 from .models import Event, Photographer, Assignment
 from .serializers import (
     EventSerializer,
+    EventScheduleSerializer,
     PhotographerSerializer,
-    AssignmentSerializer
+    AssignmentSerializer,
 )
 
 
@@ -21,31 +22,30 @@ class EventViewSet(viewsets.ModelViewSet):
         serializer = EventSerializer(event)
         return Response(serializer.data)
 
-
     @action(detail=True, methods=["post"], url_path="assign-photographers")
     def assign_photographers(self, request, pk=None):
         event = self.get_object()
 
-        # 1️⃣ Validations
+        # Validations
         if event.event_date < now().date():
             return Response(
                 {"error": "Event date is in the past"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         if event.photographers_required <= 0:
             return Response(
                 {"error": "photographers_required must be greater than 0"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         if Assignment.objects.filter(event=event).exists():
             return Response(
                 {"error": "Photographers already assigned to this event"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # 2️⃣ Find available photographers
+        # Find available photographers
         busy_photographers = Assignment.objects.filter(
             event__event_date=event.event_date
         ).values_list("photographer_id", flat=True)
@@ -57,28 +57,29 @@ class EventViewSet(viewsets.ModelViewSet):
         if available_photographers.count() < event.photographers_required:
             return Response(
                 {"error": "Not enough photographers available"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # 3️⃣ Assign photographers
-        selected_photographers = available_photographers[:event.photographers_required]
+        # Assign photographers
+        selected_photographers = available_photographers[
+            : event.photographers_required
+        ]
 
-        assignments = []
-        for photographer in selected_photographers:
-            assignment = Assignment.objects.create(
-                event=event,
-                photographer=photographer
-            )
-            assignments.append(assignment)
+        Assignment.objects.bulk_create(
+            [
+                Assignment(event=event, photographer=p)
+                for p in selected_photographers
+            ]
+        )
 
         return Response(
             {
                 "message": "Photographers assigned successfully",
                 "assigned_photographers": PhotographerSerializer(
                     selected_photographers, many=True
-                ).data
+                ).data,
             },
-            status=status.HTTP_201_CREATED
+            status=status.HTTP_201_CREATED,
         )
 
 
@@ -89,9 +90,12 @@ class PhotographerViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"], url_path="schedule")
     def schedule(self, request, pk=None):
         photographer = self.get_object()
-        assignments = Assignment.objects.filter(photographer=photographer)
-        events = [a.event for a in assignments]
-        serializer = EventSerializer(events, many=True)
+
+        events = Event.objects.filter(
+            assignments__photographer=photographer
+        ).distinct()
+
+        serializer = EventScheduleSerializer(events, many=True)
         return Response(serializer.data)
 
 

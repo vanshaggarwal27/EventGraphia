@@ -2,6 +2,7 @@ from django.utils.timezone import now
 from rest_framework import serializers
 from .models import Event, Photographer, Assignment
 
+
 class PhotographerSerializer(serializers.ModelSerializer):
     is_active = serializers.BooleanField(
         required=False,
@@ -27,7 +28,14 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = "__all__"
+        fields = [
+            "id",
+            "event_name",
+            "event_date",
+            "photographers_required",
+            "created_at",
+            "assignments",
+        ]
 
     def validate_event_date(self, value):
         if value < now().date():
@@ -42,3 +50,9 @@ class EventSerializer(serializers.ModelSerializer):
                 "Photographers required must be greater than 0."
             )
         return value
+
+
+class EventScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ["id", "event_name", "event_date"]
