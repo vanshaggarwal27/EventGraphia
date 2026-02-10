@@ -2,8 +2,13 @@ from django.utils.timezone import now
 from rest_framework import serializers
 from .models import Event, Photographer, Assignment
 
-
 class PhotographerSerializer(serializers.ModelSerializer):
+    is_active = serializers.BooleanField(
+        required=False,
+        default=True,
+        initial=True
+    )
+
     class Meta:
         model = Photographer
         fields = "__all__"
