@@ -91,23 +91,29 @@ source venv/bin/activate
 pip install django djangorestframework flake8
 ```
 
-### 4️⃣ Apply migrations
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
-
-### 5️⃣ Create superuser
+### 4️⃣ Create superuser
 ```bash
 python manage.py createsuperuser
 ```
 
-### 6️⃣ Run the server
+### 5️⃣ Run the server
 ```bash
 python manage.py runserver
 ```
 
-Open in browser: http://127.0.0.1:8000/
+Open in browser: http://127.0.0.1:8000/api/
+
+--- 
+
+### 🔐 Admin Access
+The Django admin panel is available at:
+
+http://127.0.0.1:8000/admin/
+
+**Default Admin Credentials (for testing):**  
+
+Username: admin  
+Password: admin@123
 
 ---
 
