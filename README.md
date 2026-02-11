@@ -89,31 +89,27 @@ source venv/bin/activate
 ### 3️⃣ Install dependencies
 ```bash
 pip install django djangorestframework flake8
+cd..
+
 ```
 
-### 4️⃣ Create superuser
+### 4️⃣ Apply migrations
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 5️⃣ Create superuser
 ```bash
 python manage.py createsuperuser
 ```
 
-### 5️⃣ Run the server
+### 6️⃣ Run the server
 ```bash
 python manage.py runserver
 ```
 
-Open in browser: http://127.0.0.1:8000/api/
-
---- 
-
-### 🔐 Admin Access
-The Django admin panel is available at:
-
-http://127.0.0.1:8000/admin/
-
-**Default Admin Credentials (for testing):**  
-
-Username: admin  
-Password: admin@123
+Open in browser: http://127.0.0.1:8000/
 
 ---
 
@@ -209,3 +205,11 @@ Leave the form empty and click **POST**.
 python -m flake8
 ```
 
+---
+
+## 📽️ Demo
+A screen-recorded demo demonstrates:
+- Creating photographers and events
+- Smart photographer assignment
+- Handling edge cases
+- Verifying assignments in the admin panel
