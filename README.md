@@ -89,6 +89,8 @@ source venv/bin/activate
 ### 3️⃣ Install dependencies
 ```bash
 pip install django djangorestframework flake8
+cd..
+
 ```
 
 ### 4️⃣ Apply migrations
@@ -203,3 +205,11 @@ Leave the form empty and click **POST**.
 python -m flake8
 ```
 
+---
+
+## 📽️ Demo
+A screen-recorded demo demonstrates:
+- Creating photographers and events
+- Smart photographer assignment
+- Handling edge cases
+- Verifying assignments in the admin panel
