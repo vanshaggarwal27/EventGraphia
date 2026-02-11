@@ -89,12 +89,12 @@ source venv/bin/activate
 ### 3️⃣ Install dependencies
 ```bash
 pip install django djangorestframework flake8
-cd..
 
 ```
 
 ### 4️⃣ Apply migrations
 ```bash
+cd..
 python manage.py makemigrations
 python manage.py migrate
 ```
@@ -109,7 +109,7 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Open in browser: http://127.0.0.1:8000/
+Open in browser: http://127.0.0.1:8000/api/
 
 ---
 
@@ -204,12 +204,3 @@ Leave the form empty and click **POST**.
 ```bash
 python -m flake8
 ```
-
----
-
-## 📽️ Demo
-A screen-recorded demo demonstrates:
-- Creating photographers and events
-- Smart photographer assignment
-- Handling edge cases
-- Verifying assignments in the admin panel
